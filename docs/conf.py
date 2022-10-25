@@ -24,7 +24,7 @@ copyright = "2022, GetInData"
 author = "GetInData"
 
 # The full version, including alpha/beta/rc tags
-version = re.match(r"^([0-9]+\.[0-9]+).*", release).group(1)
+version = re.match(r"^([0-9]+\.[0-9]+).*", release)[1]
 
 
 # -- General configuration ---------------------------------------------------

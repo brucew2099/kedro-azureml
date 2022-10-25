@@ -27,17 +27,20 @@ def test_can_initialize_basic_plugin_config(
         runner = CliRunner()
         result = runner.invoke(
             cli.init,
-            [
-                f"resource_group_{unique_id}",
-                f"workspace_name_{unique_id}",
-                f"experiment_name_{unique_id}",
-                f"cluster_name_{unique_id}",
-                f"storage_account_name_{unique_id}",
-                f"storage_container_{unique_id}",
-            ]
-            + ([f"--acr", f"unit_test_acr_{unique_id}"] if with_acr else []),  # noqa
+            (
+                [
+                    f"resource_group_{unique_id}",
+                    f"workspace_name_{unique_id}",
+                    f"experiment_name_{unique_id}",
+                    f"cluster_name_{unique_id}",
+                    f"storage_account_name_{unique_id}",
+                    f"storage_container_{unique_id}",
+                ]
+                + (["--acr", f"unit_test_acr_{unique_id}"] if with_acr else [])
+            ),
             obj=cli_context,
         )
+
         assert result.exit_code == 0
 
         azureml_config_path = config_path / "azureml.yml"

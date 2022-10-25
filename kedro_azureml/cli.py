@@ -166,22 +166,19 @@ def run(
     with get_context_and_pipeline(ctx, image, pipeline, params) as (mgr, az_pipeline):
         az_client = AzureMLPipelinesClient(az_pipeline, subscription_id)
 
-        is_ok = az_client.run(
+        if is_ok := az_client.run(
             mgr.plugin_config.azure,
             wait_for_completion,
             lambda job: click.echo(job.studio_url),
-        )
-
-        if is_ok:
+        ):
             exit_code = 0
             click.echo(
                 click.style(
-                    "Pipeline {} successfully".format(
-                        "finished" if wait_for_completion else "started"
-                    ),
+                    f'Pipeline {"finished" if wait_for_completion else "started"} successfully',
                     fg="green",
                 )
             )
+
         else:
             exit_code = 1
             click.echo(

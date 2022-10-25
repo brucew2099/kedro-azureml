@@ -33,10 +33,9 @@ def _get_azureml_client(subscription_id: str, config: AzureMLConfig):
     with TemporaryDirectory() as tmp_dir:
         config_path = Path(tmp_dir) / "config.json"
         config_path.write_text(json.dumps(client_config))
-        ml_client = MLClient.from_config(
+        yield MLClient.from_config(
             credential=credential, path=str(config_path.absolute())
         )
-        yield ml_client
 
 
 class AzureMLPipelinesClient:

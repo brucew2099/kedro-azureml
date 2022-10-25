@@ -72,7 +72,7 @@ def cli_context() -> CliContext:
 @pytest.fixture()
 def patched_azure_dataset():
     with TemporaryDirectory() as tmp_dir:
-        target_path = Path(tmp_dir) / (uuid4().hex + ".bin")
+        target_path = Path(tmp_dir) / f"{uuid4().hex}.bin"
     with patch.object(
         KedroAzureRunnerDataset,
         "_get_target_path",
