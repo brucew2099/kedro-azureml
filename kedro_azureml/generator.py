@@ -89,8 +89,7 @@ class AzureMLPipelineGenerator:
     def get_kedro_pipeline(self) -> Pipeline:
         from kedro.framework.project import pipelines
 
-        pipeline: Pipeline = pipelines[self.pipeline_name]
-        return pipeline
+        return pipelines[self.pipeline_name]
 
     def get_target_resource_from_node_tags(self, node: Node) -> str:
         resource_tags = set(node.tags).intersection(
@@ -115,11 +114,10 @@ class AzureMLPipelineGenerator:
     def _get_kedro_param(
         self, param_name: str, params: Optional[Dict[str, Any]] = None
     ):
-        if "." in param_name:
-            name, remainder = param_name.split(".", 1)
-            return self._get_kedro_param(remainder, (params or self.kedro_params)[name])
-        else:
+        if "." not in param_name:
             return (params or self.kedro_params)[param_name]
+        name, remainder = param_name.split(".", 1)
+        return self._get_kedro_param(remainder, (params or self.kedro_params)[name])
 
     def _from_params_or_value(
         self,
@@ -150,7 +148,7 @@ class AzureMLPipelineGenerator:
         kedro_azure_run_id: str,
     ):
         command_kwargs = {}
-        command_kwargs.update(self._get_distributed_azure_command_kwargs(node))
+        command_kwargs |= self._get_distributed_azure_command_kwargs(node)
 
         return command(
             name=self._sanitize_azure_name(node.name),
@@ -249,10 +247,9 @@ class AzureMLPipelineGenerator:
             for node_input in node.inputs:
                 # 1. try to find output in dependencies
                 sanitized_input_name = self._sanitize_param_name(node_input)
-                output_from_deps = next(
+                if output_from_deps := next(
                     (d for d in dependencies if node_input in d.outputs), None
-                )
-                if output_from_deps:
+                ):
                     parent_outputs = invoked_components[output_from_deps.name].outputs
                     azure_output = parent_outputs[sanitized_input_name]
                     azure_inputs[sanitized_input_name] = azure_output

@@ -53,10 +53,10 @@ def test_azure_pipeline_with_different_compute(
         **{"cluster_name": "cpu-cluster-2"}
     )
     with patch.object(
-        AzureMLPipelineGenerator,
-        "get_kedro_pipeline",
-        return_value=dummy_pipeline_compute_tag,
-    ):
+            AzureMLPipelineGenerator,
+            "get_kedro_pipeline",
+            return_value=dummy_pipeline_compute_tag,
+        ):
         env_name = "unit_test_env"
         docker_image = "unit_test/docker_image:latest"
         generator = AzureMLPipelineGenerator(
@@ -71,11 +71,9 @@ def test_azure_pipeline_with_different_compute(
         for node in dummy_pipeline_compute_tag.nodes:
             if node.tags:
                 assert all(
-                    [
-                        dummy_plugin_config.azure.compute[tag].cluster_name
-                        == az_pipeline.jobs[node.name]["compute"]
-                        for tag in node.tags
-                    ]
+                    dummy_plugin_config.azure.compute[tag].cluster_name
+                    == az_pipeline.jobs[node.name]["compute"]
+                    for tag in node.tags
                 ), "compute settings don't match"
 
 
